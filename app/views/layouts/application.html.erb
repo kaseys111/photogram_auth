@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootswatch/3.3.5/paper/bootstrap.min.css">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
+  <link href="https://fonts.googleapis.com/css?family=Grand+Hotel" rel="stylesheet">
+
   <style>
     /* Only necessary if you are using navbar-fixed-top */
     body {
@@ -34,27 +36,27 @@
           <span class="icon-bar"></span>
           <span class="icon-bar"></span>
         </button>
-        <a href="/" class="navbar-brand">PhotogramAuth</a>
+        <a href="/" class="navbar-brand"><i class="fa fa-camera-retro" aria-hidden="true"></i> | Photogram</a>
       </div>
 
       <!-- Collect the nav links, forms, and other content for toggling -->
       <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
         <ul class="nav navbar-nav">
-          <li><a href="/users">All Users</a></li>
-          <li><a href="/photos">All Posts</a></li>
+          <li><a href="/users"><i class="fa fa-users" aria-hidden="true"></i> All Users</a></li>
+          <li><a href="/photos"><i class="fa fa-picture-o" aria-hidden="true"></i> All Posts</a></li>
           <% if current_user != nil %>
-            <li><a href="/users/<%= current_user.id %>">My Wall</a></li>
-            <li><a href="/my_likes">My Likes</a></li>
+            <li><a href="/users/<%= current_user.id %>"><i class="fa fa-user" aria-hidden="true"></i> My Wall</a></li>
+            <li><a href="/my_likes"><i class="fa fa-heart" aria-hidden="true"></i> My Likes</a></li>
           <% end %>
         </ul>
 
         <ul class="nav navbar-nav navbar-right">
           <% if current_user == nil %>
-            <li><a href="/users/sign_in">Sign In</a></li>
-            <li><a href="/users/sign_up">Sign Up</a></li>
+            <li><a href="/users/sign_in"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign In</a></li>
+            <li><a href="/users/sign_up"><i class="fa fa-user-plus" aria-hidden="true"></i> Sign Up</a></li>
           <% else %>
-          <li><a href="/users/edit"><%= current_user.username %></a></li>
-          <li><a href="/users/sign_out" data-method="delete" rel="nofollow">Sign Out</a></li>
+          <li><a href="/users/edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> <%= current_user.username %></a></li>
+          <li><a href="/users/sign_out" data-method="delete" rel="nofollow"><i class="fa fa-sign-out" aria-hidden="true"></i> Sign Out</a></li>
           <% end %>
         </ul>
       </div><!-- /.navbar-collapse -->

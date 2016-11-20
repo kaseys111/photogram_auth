@@ -2,19 +2,14 @@
   <h3><%= @user.username %></h3>
 </div>
 
-<div class="row">
-  <table>
-    <% @photos.each do |photo| %>
-      <tr>
-        <th>
-          <h5><%= @user.username %></h5><h6><%= photo.created_at.in_time_zone("Central Time (US & Canada)").strftime("%l:%M %p") %></h6>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <img src="<%= photo.image %>" height="300"/>
-        </td>
-      </tr>
+<% @photos.in_groups_of(4, false).each do |group| %>
+  <div class="row">
+    <div class="col-md-1">
+    </div>
+    <% group.each do |photo| %>
+      <div class="col-md-2 center-cropped" style="background-image: url('<%= photo.image %>');">
+        <a href="/photos/<%= photo.id %>"><img src="<%= photo.image %>" /></a>
+      </div>
     <% end %>
-  </table>
-</div>
+  </div>
+<% end %>

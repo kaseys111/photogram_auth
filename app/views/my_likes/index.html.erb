@@ -1,20 +1,63 @@
-<div class="page-header">
+<div class="page-header col-md-offset-2 col-md-8">
   <h3><%= current_user.username %>'s Liked Photos</h3>
 </div>
 
-<div class="row">
-  <table>
-    <% @liked_photos.each do |photo| %>
-      <tr>
-        <th>
-          <h5><%= photo.user.username %></h5><h6><%= photo.created_at.in_time_zone("Central Time (US & Canada)").strftime("%l:%M %p") %></h6>
-        </th>
-      </tr>
-      <tr>
-        <td>
-          <img src="<%= photo.image %>" height="300"/>
-        </td>
-      </tr>
-    <% end %>
-  </table>
-</div>
+<% @liked_photos.each do |photo| %>
+  <div class="row">
+    <div class="col-md-offset-2 col-md-8">
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-md-6">
+              <h4 class="panel-title"><a href="/users/<%= photo.user_id %>"><%= photo.user.username %></a></h4>
+            </div>
+            <div class="col-md-6">
+              <h6 class="panel-title time"><%= time_ago_in_words(photo.created_at.in_time_zone("Central Time (US & Canada)")) %> ago</h6>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-body">
+          <a href="/photos/<%= photo.id %>"><img src="<%= photo.image %>" /></a>
+        </div>
+
+        <div class="panel-footer">
+          <% if photo.fans.count> 6 %>
+              <% fans = photo.fans.count + " likes" %>
+          <% else %>
+            <% fans = photo.fans.pluck(:username).to_sentence(two_words_connector: ", ", last_word_connector: ", ") %>
+          <% end %>
+
+          <% if (photo.fans.include? current_user) != true %>
+            <form action="/create_like" method="post">
+              <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+              <input type="hidden" name="user_id" value="<%= current_user.id %>">
+
+              <input type="hidden" name="photo_id" value="<%= photo.id %>">
+
+              <button class="btn-link"><i class="fa fa-heart-o" aria-hidden="true"></i></button><%= fans %>
+            </form>
+
+          <% else %>
+            <a href="/delete_like/<%= photo.likes.find_by({ :user_id => current_user.id }).id %>"><i class="fa fa-heart" aria-hidden="true"></i></a>     <%= fans %>
+          <% end %>
+
+          <p><b><a href="/user/<%= photo.user_id %>"><%= photo.user.username %></a></b> <%= photo.caption %></p>
+
+          <table>
+            <% photo.comments.each do |comment| %>
+              <tr>
+                <td>
+                  <p><b><a href="/user/<%= comment.user_id %>"><%= comment.user.username %></a></b> <%= comment.body %> </p>
+                </td>
+              </tr>
+            <% end %>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<% end %>

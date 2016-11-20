@@ -1,24 +1,75 @@
-<div class="page-header">
-  <h3>Photo #<%= @photo.id %></h3>
-</div>
+<div class="row" style="padding-top:50px;padding-bottom:50px;">
+  <div class="col-md-offset-2 col-md-8">
+    <div class="panel panel-default">
 
-<div class="row">
-  <div class="col-md-12 mb-2">
-    <dl class="dl-horizontal">
-      <dt>Caption</dt>
-      <dd><%= @photo.caption %></dd>
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-md-6">
+            <h4 class="panel-title"><a href="/users/<%= @photo.user_id %>"><%= @photo.user.username %></a></h4>
+          </div>
+          <div class="col-md-6">
+            <h6 class="panel-title time"><%= time_ago_in_words(@photo.created_at.in_time_zone("Central Time (US & Canada)")) %> ago</h6>
+          </div>
+        </div>
+      </div>
 
-      <dt>Image</dt>
-      <dd><%= @photo.image %></dd>
+      <div class="panel-body photo-posts">
+        <a href="/photos/<%= @photo.id %>"><img src="<%= @photo.image %>" /></a>
+      </div>
 
-      <dt>User</dt>
-      <dd><%= @photo.user_id %></dd>
+      <div class="panel-footer">
+        <% if @photo.fans.count > 6 %>
+            <% fans = @photo.fans.count + " likes" %>
+        <% else %>
+          <% fans = @photo.fans.pluck(:username).to_sentence(two_words_connector: ", ", last_word_connector: ", ") %>
+        <% end %>
 
-    </dl>
+        <% if (@photo.fans.include? current_user) != true %>
+          <form action="/create_like" method="post">
+            <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+            <input type="hidden" name="user_id" value="<%= current_user.id %>">
+
+            <input type="hidden" name="photo_id" value="<%= @photo.id %>">
+
+            <button class="btn-link"><i class="fa fa-heart-o" aria-hidden="true"></i></button><%= fans %>
+          </form>
+
+        <% else %>
+          <a href="/delete_like/<%= @photo.likes.find_by({ :user_id => current_user.id }).id %>"><i class="fa fa-heart" aria-hidden="true"></i></a>     <%= fans %>
+        <% end %>
+
+        <p><b><a href="/user/<%= @photo.user_id %>"><%= @photo.user.username %></a></b> <%= @photo.caption %></p>
+
+        <table>
+          <% @photo.comments.each do |comment| %>
+            <tr>
+              <td>
+                <p><b><a href="/user/<%= comment.user_id %>"><%= comment.user.username %></a></b> <%= comment.body %> </p>
+              </td>
+            </tr>
+          <% end %>
+        </table>
+
+        <form action="/create_comment" method="post">
+
+          <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>">
+
+          <div class="form-group">
+            <input class="form-control" type="text" name="body" placeholder="Add a comment...">
+          </div>
+
+          <input type="hidden" name="user_id" value="<%= current_user.id %>">
+
+          <input type="hidden" name="photo_id" value="<%= @photo.id %>">
+
+        </form>
+      </div>
+
+    </div>
 
     <div class="btn-group btn-group-justified">
-      <a href="/photos" class="btn btn-primary">
-        Back
+      <%= link_to 'Back', :back, class: "btn btn-block btn-primary" %>
       </a>
       <% if @photo.user_id == current_user.id %>
         <a href="/photos/<%= @photo.id %>/edit" class="btn btn-warning">
