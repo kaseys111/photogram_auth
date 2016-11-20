@@ -2,14 +2,18 @@
   <h3><%= @user.username %></h3>
 </div>
 
-<% @photos.in_groups_of(4, false).each do |group| %>
-  <div class="row">
+<% @photos.in_groups_of(3, false).each do |group| %>
+  <div class="row user-page">
     <div class="col-md-1">
+
     </div>
     <% group.each do |photo| %>
-      <div class="col-md-2 center-cropped" style="background-image: url('<%= photo.image %>');">
-        <a href="/photos/<%= photo.id %>"><img src="<%= photo.image %>" /></a>
+      <div class="col-md-3 center-cropped">
+        <a href="/photos/<%= photo.id %>"><img src="<%= photo.image %>" class="image-thumb"/>
+        <h5 class="text"><i class="fa fa-heart" aria-hidden="true"></i> <%= photo.likes.count %>  <i class="fa fa-comment" aria-hidden="true"></i> <%= photo.comments.count %></h5></a>
       </div>
     <% end %>
   </div>
 <% end %>
+
+<!-- style="background-image: url(' photo.image ');" -->
